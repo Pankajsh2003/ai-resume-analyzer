@@ -6,7 +6,8 @@ It extracts text from resumes, identifies missing skills, provides job-role scor
 ---
 
 ## 🔗 Live Demo  
-👉 **https://YOUR-APP-NAME.streamlit.app**
+👉 **https://ai-resume-analyzer-abc123.streamlit.app
+**
 
 ---
 
