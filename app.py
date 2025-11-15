@@ -152,6 +152,7 @@ def create_pdf_bytes(role, score, found, missing, resume_snippet):
     pdf.ln(6)
     pdf.set_font("Arial", "B", 12)
     pdf.cell(0, 6, "Resume Snippet (first 400 chars):", ln=True)
+
     pdf.set_font("Arial", size=10)
     snippet = resume_snippet.replace('\n', ' ')[:400]
     pdf.multi_cell(0, 6, snippet)
@@ -160,9 +161,10 @@ def create_pdf_bytes(role, score, found, missing, resume_snippet):
     pdf.set_font("Arial", size=9)
     pdf.multi_cell(0, 6, "Notes: Automated keyword analysis. Use the missing skills to enhance your resume.")
 
-    raw = pdf.output(dest='S').encode('latin-1')
-    return raw
+    # ★★★ FIX: unicode-safe PDF output ★★★
+    raw = pdf.output(dest="S").encode("latin-1", "ignore")
 
+    return raw
 # -----------------------------
 # Main Logic
 # -----------------------------
