@@ -123,48 +123,52 @@ def analyze_categorized(resume_text: str, role_key: str):
     score = int((total_found / total_checked) * 100) if total_checked > 0 else 0
     return score, found, missing
 
+from fpdf import FPDF
+
+class PDF(FPDF):
+    def __init__(self):
+        super().__init__()
+        self.set_auto_page_break(auto=True, margin=15)
+        self.add_page()
+        # UTF-8 unicode font
+        self.add_font("DejaVu", "", "DejaVuSans.ttf", uni=True)
+        self.set_font("DejaVu", "", 12)
+
 def create_pdf_bytes(role, score, found, missing, resume_snippet):
-    pdf = FPDF()
-    pdf.set_auto_page_break(auto=True, margin=15)
-    pdf.add_page()
+    pdf = PDF()
 
-    pdf.set_font("Arial", "B", 14)
-    pdf.cell(0, 8, f"AI Resume Analysis Report - {role}", ln=True, align='C')
-    pdf.ln(6)
+    pdf.set_font("DejaVu", "", 14)
+    pdf.cell(0, 10, f"AI Resume Analysis Report - {role}", ln=True, align="C")
 
-    pdf.set_font("Arial", size=11)
-    pdf.cell(0, 6, f"Job Readiness Score: {score}/100", ln=True)
-    pdf.ln(4)
+    pdf.set_font("DejaVu", "", 12)
+    pdf.ln(5)
+    pdf.cell(0, 8, f"Job Readiness Score: {score}/100", ln=True)
 
-    pdf.set_font("Arial", "B", 12)
-    pdf.cell(0, 6, "Skills Found:", ln=True)
-    pdf.set_font("Arial", size=11)
+    pdf.ln(5)
+    pdf.set_font("DejaVu", "", 13)
+    pdf.cell(0, 8, "Skills Found:", ln=True)
+
+    pdf.set_font("DejaVu", "", 11)
     for cat, items in found.items():
-        pdf.cell(0, 6, f" {cat}: " + (", ".join(items) if items else "None"), ln=True)
+        pdf.multi_cell(0, 6, f"{cat}: {', '.join(items) if items else 'None'}")
 
-    pdf.ln(4)
-    pdf.set_font("Arial", "B", 12)
-    pdf.cell(0, 6, "Missing Skills:", ln=True)
-    pdf.set_font("Arial", size=11)
+    pdf.ln(5)
+    pdf.set_font("DejaVu", "", 13)
+    pdf.cell(0, 8, "Missing Skills:", ln=True)
+
+    pdf.set_font("DejaVu", "", 11)
     for cat, items in missing.items():
-        pdf.cell(0, 6, f" {cat}: " + (", ".join(items) if items else "None"), ln=True)
+        pdf.multi_cell(0, 6, f"{cat}: {', '.join(items) if items else 'None'}")
 
-    pdf.ln(6)
-    pdf.set_font("Arial", "B", 12)
-    pdf.cell(0, 6, "Resume Snippet (first 400 chars):", ln=True)
+    pdf.ln(5)
+    pdf.set_font("DejaVu", "", 13)
+    pdf.cell(0, 8, "Resume Snippet:", ln=True)
 
-    pdf.set_font("Arial", size=10)
-    snippet = resume_snippet.replace('\n', ' ')[:400]
-    pdf.multi_cell(0, 6, snippet)
+    pdf.set_font("DejaVu", "", 10)
+    pdf.multi_cell(0, 6, resume_snippet[:500])
 
-    pdf.ln(8)
-    pdf.set_font("Arial", size=9)
-    pdf.multi_cell(0, 6, "Notes: Automated keyword analysis. Use the missing skills to enhance your resume.")
+    return pdf.output(dest="S").encode("utf-8")
 
-    # ★★★ FIX: unicode-safe PDF output ★★★
-    raw = pdf.output(dest="S").encode("latin-1", "ignore")
-
-    return raw
 # -----------------------------
 # Main Logic
 # -----------------------------
