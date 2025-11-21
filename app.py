@@ -130,6 +130,7 @@ class PDF(FPDF):
         super().__init__()
         self.set_auto_page_break(auto=True, margin=15)
         self.add_page()
+        # Use core font to avoid external TTF dependency
         self.set_font("Helvetica", "", 12)
 
 def create_pdf_bytes(role, score, found, missing, resume_snippet):
@@ -163,9 +164,15 @@ def create_pdf_bytes(role, score, found, missing, resume_snippet):
     pdf.cell(0, 8, "Resume Snippet:", ln=True)
 
     pdf.set_font("Helvetica", "", 10)
-    pdf.multi_cell(0, 6, resume_snippet[:500])
+    safe_snip = (resume_snippet or "")[:1500]
+    safe_snip = safe_snip.replace('\r', '').replace('\x0c', '')
+    pdf.multi_cell(0, 6, safe_snip)
 
-    return pdf.output(dest="S").encode("latin-1", errors="replace")
+    out = pdf.output(dest="S")
+    if isinstance(out, str):
+        return out.encode("latin-1", errors="replace")
+    return out
+
 
 # -----------------------------
 # Main Logic
