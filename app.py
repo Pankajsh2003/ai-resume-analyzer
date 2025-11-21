@@ -130,44 +130,42 @@ class PDF(FPDF):
         super().__init__()
         self.set_auto_page_break(auto=True, margin=15)
         self.add_page()
-        # UTF-8 unicode font
-        self.add_font("DejaVu", "", "DejaVuSans.ttf", uni=True)
-        self.set_font("DejaVu", "", 12)
+        self.set_font("Helvetica", "", 12)
 
 def create_pdf_bytes(role, score, found, missing, resume_snippet):
     pdf = PDF()
 
-    pdf.set_font("DejaVu", "", 14)
+    pdf.set_font("Helvetica", "", 14)
     pdf.cell(0, 10, f"AI Resume Analysis Report - {role}", ln=True, align="C")
 
-    pdf.set_font("DejaVu", "", 12)
+    pdf.set_font("Helvetica", "", 12)
     pdf.ln(5)
     pdf.cell(0, 8, f"Job Readiness Score: {score}/100", ln=True)
 
     pdf.ln(5)
-    pdf.set_font("DejaVu", "", 13)
+    pdf.set_font("Helvetica", "", 13)
     pdf.cell(0, 8, "Skills Found:", ln=True)
 
-    pdf.set_font("DejaVu", "", 11)
+    pdf.set_font("Helvetica", "", 11)
     for cat, items in found.items():
         pdf.multi_cell(0, 6, f"{cat}: {', '.join(items) if items else 'None'}")
 
     pdf.ln(5)
-    pdf.set_font("DejaVu", "", 13)
+    pdf.set_font("Helvetica", "", 13)
     pdf.cell(0, 8, "Missing Skills:", ln=True)
 
-    pdf.set_font("DejaVu", "", 11)
+    pdf.set_font("Helvetica", "", 11)
     for cat, items in missing.items():
         pdf.multi_cell(0, 6, f"{cat}: {', '.join(items) if items else 'None'}")
 
     pdf.ln(5)
-    pdf.set_font("DejaVu", "", 13)
+    pdf.set_font("Helvetica", "", 13)
     pdf.cell(0, 8, "Resume Snippet:", ln=True)
 
-    pdf.set_font("DejaVu", "", 10)
+    pdf.set_font("Helvetica", "", 10)
     pdf.multi_cell(0, 6, resume_snippet[:500])
 
-    return pdf.output(dest="S").encode("utf-8")
+    return pdf.output(dest="S").encode("latin-1", errors="replace")
 
 # -----------------------------
 # Main Logic
