@@ -1,0 +1,13 @@
+from fpdf import FPDF
+
+class PDF(FPDF):
+    def __init__(self):
+        super().__init__()
+        self.set_auto_page_break(auto=True, margin=15)
+
+        # ADD PAGE
+        self.add_page()
+
+        # ADD UNICODE FONT
+        self.add_font("DejaVu", "", "DejaVuSans.ttf", uni=True)
+        self.set_font("DejaVu", "", 12)
