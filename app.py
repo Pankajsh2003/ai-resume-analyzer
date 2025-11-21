@@ -220,17 +220,7 @@ if uploaded_file and job_role:
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    resume_snip = resume_text_raw[:500]
-   # --- PDF/report disabled to avoid font/encoding errors ---
-resume_snip = resume_text_raw[:500]
-
-st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.write("📄 Detailed PDF report is disabled in this deployment.")
-st.write("If you want it later, either upload `DejaVuSans.ttf` to the app folder or enable the PDF code locally.")
-# show a non-functional button for consistent UI
-st.button("📥 Download Detailed Report (PDF) — Disabled", disabled=True)
-st.markdown("</div>", unsafe_allow_html=True)
-# --- End PDF/report disabled ---
+   
 
 
 else:
